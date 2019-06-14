@@ -1,0 +1,78 @@
+{
+  "name": "@nuxt/markdown",
+  "version": "0.0.2",
+  "description": "Nuxt-flavoured fork of @dimerapp/markdown",
+  "main": "index.js",
+  "files": [
+    "src",
+    "index.js",
+    "sanitize.json"
+  ],
+  "scripts": {
+    "pretest": "yarn lint",
+    "test": "node japaFile.js",
+    "lint": "standard"
+  },
+  "author": [
+    "Harminder Virk <virk.officials@gmail.com>",
+    "Jonas Galvez <jonasgalvez@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "detab": "^2.0.1",
+    "mdast-util-definitions": "^1.2.3",
+    "mdast-util-to-string": "^1.0.5",
+    "mdast-util-toc": "^2.1.0",
+    "rehype-minify-whitespace": "^2.0.3",
+    "rehype-raw": "^4.0.1",
+    "rehype-sanitize": "^2.0.1",
+    "rehype-sort-attribute-values": "^1.0.1",
+    "rehype-sort-attributes": "^1.0.1",
+    "rehype-stringify": "^4.0.0",
+    "remark-autolink-headings": "git+https://github.com/thetutlage/remark-autolink-headings.git",
+    "remark-macro": "^1.0.7",
+    "remark-parse": "^5.0.0",
+    "remark-rehype": "^3.0.1",
+    "remark-slug": "^5.1.0",
+    "remark-squeeze-paragraphs": "^3.0.2",
+    "unified": "^7.0.0",
+    "unist-builder": "^1.0.3",
+    "unist-util-visit": "^1.4.0"
+  },
+  "devDependencies": {
+    "dedent": "^0.7.0",
+    "fs-extra": "^7.0.0",
+    "japa": "^2.0.4",
+    "japa-cli": "^1.0.1",
+    "js-beautify": "^1.8.6",
+    "mrm": "^1.2.1",
+    "pkg-ok": "^2.3.1",
+    "standard": "^12.0.1",
+    "vfile": "^3.0.0",
+    "yorkie": "^2.0.0"
+  },
+  "nyc": {
+    "exclude": [
+      "test"
+    ]
+  },
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuxt/markdown.git"
+  },
+  "keywords": [
+    "markdown",
+    "nuxt"
+  ],
+  "bugs": {
+    "url": "https://github.com/nuxt/markdown/issues"
+  },
+  "homepage": "https://github.com/nuxt/markdown#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
