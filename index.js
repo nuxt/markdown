@@ -64,10 +64,24 @@ class MarkdownProcessor {
       const toc = []
       this.getStream({
         heading(h, node) {
-          const text = node.children
-            .find(n => n.type === 'text')
-          if (text) {
-            toc.push([node.depth, text.value])
+          let link
+          let text
+          for (const child of node.children) {
+            switch (child.type) {
+              case 'text':
+                text = child.value
+                break
+              case 'link':
+                if (child.url.startsWith('#')) {
+                  link = child.url
+                }
+                break
+              default:
+                break
+            }
+          }
+          if (text && link) {
+            toc.push([node.depth, text, link])
           }
           return h(node, `h${node.depth}`, all(h, node))
         }
