@@ -13,12 +13,8 @@ const sanitize = require('rehype-sanitize')
 const sortValues = require('rehype-sort-attribute-values')
 const sortAttrs = require('rehype-sort-attributes')
 const macroEngine = require('remark-macro')()
-
-const {
-  checklist,
-  relativeLinks,
-  toc
-} = require('./src/transformers')
+const all = require('mdast-util-to-hast/lib/all')
+const { checklist, relativeLinks } = require('./src/transformers')
 
 require('./src/macros')(macroEngine)
 
@@ -42,10 +38,9 @@ class MarkdownProcessor {
   }
 
   // Returns the stream of mdast
-  getStream () {
+  getStream (handlers = {}) {
     const stream = unified()
       .use(markdown)
-      .use(toc, this.options)
       .use(relativeLinks, this.options)
       .use(slug)
       .use(headings)
@@ -54,13 +49,37 @@ class MarkdownProcessor {
       .use(checklist, this.options)
       .use(remark2rehype, {
         allowDangerousHTML: true,
-        handlers: this.settings.handlers
+        handlers: { ...this.settings.handlers, ...handlers }
       })
       .use(rehypeRaw)
       .use(minifyWhiteSpace)
     return this.options.sanitize
       ? stream.use(sanitize, this.settings.sanitize)
       : stream
+  }
+
+  getTocAndMarkup () {
+    return new Promise((resolve, reject) => {
+      let lastHeader
+      const toc = []
+      this.getStream({
+        heading(h, node) {
+          const text = node.children
+            .find(n => n.type === 'text')
+          if (text) {
+            toc.push([node.depth, text.value])
+          }
+          return h(node, `h${node.depth}`, all(h, node))
+        }
+      })
+        .use(require('./src/compilers/html'))
+        .process(this.markdown, (error, file) => {
+          if (error) {
+            return reject(error)
+          }
+          resolve({ html: file.contents, toc })
+        })
+    })
   }
 
   // Converts markdown to HTML

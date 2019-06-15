@@ -1,4 +1,5 @@
 const normalize = require('mdurl/encode')
+const all = require('mdast-util-to-hast/lib/all')
 
 function link(h, node) {
   let tagName
@@ -17,7 +18,7 @@ function link(h, node) {
     tagName = 'nuxt-link'    
   }
 
-  return h(node.position, tagName, props)
+  return h(node, tagName, props, all(h, node))
 }
 
 module.exports = link
