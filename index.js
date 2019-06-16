@@ -9,6 +9,7 @@ const squeezeParagraphs = require('remark-squeeze-paragraphs')
 const minifyWhiteSpace = require('rehype-minify-whitespace')
 const remark2rehype = require('remark-rehype')
 const rehypeRaw = require('rehype-raw')
+const rehypePrism = require('@mapbox/rehype-prism')
 const sanitize = require('rehype-sanitize')
 const sortValues = require('rehype-sort-attribute-values')
 const sortAttrs = require('rehype-sort-attributes')
@@ -52,6 +53,7 @@ class MarkdownProcessor {
         handlers: { ...this.settings.handlers, ...handlers }
       })
       .use(rehypeRaw)
+      .use(rehypePrism)
       .use(minifyWhiteSpace)
     return this.options.sanitize
       ? stream.use(sanitize, this.settings.sanitize)

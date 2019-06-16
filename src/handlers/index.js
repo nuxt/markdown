@@ -10,6 +10,5 @@
 */
 
 module.exports = {
-  code: require('./code'),
   link: require('./link')
 }
