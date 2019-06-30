@@ -6,7 +6,6 @@ const markdown = require('remark-parse')
 const slug = require('remark-slug')
 const headings = require('remark-autolink-headings')
 const squeezeParagraphs = require('remark-squeeze-paragraphs')
-const minifyWhiteSpace = require('rehype-minify-whitespace')
 const remark2rehype = require('remark-rehype')
 const rehypeRaw = require('rehype-raw')
 const rehypePrism = require('@mapbox/rehype-prism')
@@ -54,7 +53,6 @@ class MarkdownProcessor {
       })
       .use(rehypeRaw)
       .use(rehypePrism)
-      .use(minifyWhiteSpace)
     return this.options.sanitize
       ? stream.use(sanitize, this.settings.sanitize)
       : stream
