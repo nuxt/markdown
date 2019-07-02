@@ -18,6 +18,21 @@ const { checklist, relativeLinks } = require('./src/transformers')
 
 require('./src/macros')(macroEngine)
 
+function extractText(node) {
+  let text = ''
+  for (const child of node.children) {
+    if (child.children && child.children.length) {
+      text += extractText(child)
+      continue
+    }
+    if (!child.value) {
+      continue
+    }
+    text += child.value
+  }
+  return text
+}
+
 // Proceses the markdown and output it to
 // HTML or react components.
 class MarkdownProcessor {
@@ -65,21 +80,11 @@ class MarkdownProcessor {
       this.getStream({
         heading(h, node) {
           let link
-          let text
-          for (const child of node.children) {
-            switch (child.type) {
-              case 'text':
-                text = child.value
-                break
-              case 'link':
-                if (child.url.startsWith('#')) {
-                  link = child.url
-                }
-                break
-              default:
-                break
-            }
+          const _link = node.children.find(c => c.type === 'link')
+          if (_link && _link.url.startsWith('#')) {
+            link = _link.url
           }
+          const text = extractText(node)
           if (text && link) {
             toc.push([node.depth, text, link])
           }
