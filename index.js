@@ -10,33 +10,25 @@ const remark2rehype = require('remark-rehype')
 const rehypeRaw = require('rehype-raw')
 const rehypePrism = require('@mapbox/rehype-prism')
 const sanitize = require('rehype-sanitize')
-const sortValues = require('rehype-sort-attribute-values')
-const sortAttrs = require('rehype-sort-attributes')
 const macroEngine = require('remark-macro')()
-const all = require('mdast-util-to-hast/lib/all')
+const headingHandler = require('./src/handlers/_heading')
 const { checklist, relativeLinks } = require('./src/transformers')
-
 require('./src/macros')(macroEngine)
-
-function extractText(node) {
-  let text = ''
-  for (const child of node.children) {
-    if (child.children && child.children.length) {
-      text += extractText(child)
-      continue
-    }
-    if (!child.value) {
-      continue
-    }
-    text += child.value
-  }
-  return text
-}
 
 // Proceses the markdown and output it to
 // HTML or react components.
-class MarkdownProcessor {
+class NuxtMarkdownProcessor {
   constructor (markdown, options) {
+    // backwards compatibility but tests still fails due to different white space handling
+    if (
+      arguments.length === 1 &&
+      typeof markdown === 'object' &&
+      (!markdown.constructor || markdown.constructor.name !== 'VFile')
+    ) {
+      options = markdown
+      markdown = undefined
+    }
+
     this.markdown = markdown
 
     this.settings = {
@@ -52,83 +44,98 @@ class MarkdownProcessor {
     macroEngine.addMacro(name, callback, inline)
   }
 
-  // Returns the stream of mdast
-  getStream (handlers = {}) {
-    const stream = unified()
-      .use(markdown)
-      .use(relativeLinks, this.options)
-      .use(slug)
-      .use(headings)
-      .use(macroEngine.transformer)
-      .use(squeezeParagraphs)
-      .use(checklist, this.options)
-      .use(remark2rehype, {
-        allowDangerousHTML: true,
-        handlers: { ...this.settings.handlers, ...handlers }
-      })
-      .use(rehypeRaw)
-      .use(rehypePrism)
-    return this.options.sanitize
-      ? stream.use(sanitize, this.settings.sanitize)
-      : stream
+  _createPreset ({ settings = {}, handlers } = {}) {
+    const _sanitize = this.options.sanitize ? [[sanitize, this.settings.sanitize]] : []
+
+    if (this.options.toc) {
+      handlers = {
+        ...handlers,
+        heading: headingHandler.bind(this)
+      }
+    }
+
+    return {
+      settings,
+      plugins: [
+        markdown,
+        [relativeLinks, this.options],
+        slug,
+        headings,
+        macroEngine.transformer,
+        squeezeParagraphs,
+        [checklist, this.options],
+        [remark2rehype, {
+          allowDangerousHTML: true,
+          handlers: {
+            ...this.settings.handlers,
+            ...handlers
+          }
+        }],
+        rehypeRaw,
+        rehypePrism,
+        ..._sanitize
+      ]
+    }
   }
 
-  getTocAndMarkup () {
-    return new Promise((resolve, reject) => {
-      let lastHeader
-      const toc = []
-      this.getStream({
-        heading(h, node) {
-          let link
-          const _link = node.children.find(c => c.type === 'link')
-          if (_link && _link.url.startsWith('#')) {
-            link = _link.url
-          }
-          const text = extractText(node)
-          if (text && link) {
-            toc.push([node.depth, text, link])
-          }
-          return h(node, `h${node.depth}`, all(h, node))
+  _tocReset () {
+    this.toc = []
+
+    return this
+  }
+
+  createProcessor (config) {
+    if (!this.preset) {
+      this.preset = this._createPreset(config)
+    }
+
+    this.processor = unified().use(this.preset)
+
+    return new Proxy(this, {
+      get (target, prop) {
+        if (target.processor[prop]) {
+          return target.processor[prop]
         }
-      })
-        .use(require('./src/compilers/html'))
-        .process(this.markdown, (error, file) => {
-          if (error) {
-            return reject(error)
-          }
-          resolve({ html: file.contents, toc })
-        })
+
+        return target[prop]
+      }
     })
+  }
+
+  newProcessor () {
+    if (!this.processor) {
+      this.createProcessor()
+    }
+
+    return this.processor()
+  }
+
+  async toMarkup (markdown) {
+    this._tocReset()
+
+    const { contents: html } = await this.toHTML(markdown)
+
+    return { html, toc: this.toc }
   }
 
   // Converts markdown to HTML
-  toHTML () {
-    return new Promise((resolve, reject) => {
-      this.getStream()
-        .use(require('./src/compilers/html'))
-        .process(this.markdown, (error, file) => {
-          if (error) {
-            return reject(error)
-          }
-          resolve(file)
-        })
-    })
+  async toHTML (markdown) {
+    const file = await this.newProcessor()
+      .use(require('./src/compilers/html'))
+      .process(markdown || this.markdown)
+
+    return file
   }
 
   // Converts the markdown document to it's JSON structure.
   // Super helpful for JSON API's
-  toJSON () {
-    return new Promise((resolve, reject) => {
-      this.getStream()
-        .use(require('./src/compilers/json'))
-        .process(this.markdown, (error, file) => {
-          if (error) {
-            return reject(error)
-          }
-          resolve(file)
-        })
-    })
+  async toJSON (markdown) {
+    const file = await this.newProcessor()
+      .use(require('./src/compilers/json'))
+      .process(markdown || this.markdown)
+
+    return file
   }
 }
 
-module.exports = MarkdownProcessor
+module.exports = NuxtMarkdownProcessor
