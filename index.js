@@ -15,8 +15,37 @@ const headingHandler = require('./src/handlers/_heading')
 const { checklist, relativeLinks } = require('./src/transformers')
 require('./src/macros')(macroEngine)
 
-// Proceses the markdown and output it to
-// HTML or react components.
+// Safely escape {{ }} in code blocks using zero-width whitespace
+function escapeVueInMarkdown(raw) {
+  let c
+  let i = 0
+  let escaped = false
+  let r = ''
+  for (i = 0; i < raw.length; i++) {
+    c = raw.charAt(i)
+    if (c === '`' && raw.slice(i, i + 3) === '```' && raw.charCodeAt(i - 1) !== 92) {
+      escaped = !escaped
+      r += raw.slice(i, i + 3)
+      i += 2
+      continue
+    } else if (c === '\`' && raw.charCodeAt(i - 1) !== 92) {
+      escaped = !escaped
+      r += c
+      continue
+    }
+    if (!escaped) {
+      r += c
+    } else if (c === '{' && raw.charAt(i + 1) === '{' && raw.charCodeAt(i - 1) !== 92) {
+      i += 1
+      r += '{\u200B{' // zero width white space character
+    } else {
+      r += c
+    }
+  }
+  return r
+}
+
+// Proceses the markdown and output it to native HTML or components.
 class NuxtMarkdownProcessor {
   constructor (markdown, options) {
     // backwards compatibility but tests still fails due to different white space handling
@@ -111,6 +140,7 @@ class NuxtMarkdownProcessor {
   }
 
   async toMarkup (markdown) {
+    markdown = escapeVueInMarkdown(markdown)
     this._tocReset()
 
     const { contents: html } = await this.toHTML(markdown)
@@ -120,6 +150,7 @@ class NuxtMarkdownProcessor {
 
   // Converts markdown to HTML
   async toHTML (markdown) {
+    markdown = escapeVueInMarkdown(markdown)
     const file = await this.newProcessor()
       .use(require('./src/compilers/html'))
       .process(markdown || this.markdown)
