@@ -8,12 +8,10 @@
 */
 
 module.exports = function (macro) {
-  require('./codegroup')(macro)
   require('./codepen')(macro)
   require('./collapse')(macro)
   require('./note')(macro)
   require('./tip')(macro)
   require('./warn')(macro)
   require('./youtube')(macro)
-  require('./include')(macro)
 }
