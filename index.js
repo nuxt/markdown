@@ -101,7 +101,7 @@ class NuxtMarkdownProcessor {
           }
         }],
         rehypeRaw,
-        rehypePrism,
+        [rehypePrism, { ignoreMissing: true }],
         ..._sanitize
       ]
     }
