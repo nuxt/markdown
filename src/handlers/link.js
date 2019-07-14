@@ -16,7 +16,7 @@ function link (h, node) {
   } else {
     props['to'] = url
     tagName = 'nuxt-link'
-    props['class'] = 'press-link'
+    props['data-press-link'] = 'true'
   }
 
   return h(node, tagName, props, all(h, node))
