@@ -1,6 +1,6 @@
 {
   "name": "@nuxt/markdown",
-  "version": "0.0.9b",
+  "version": "0.0.9c",
   "description": "Nuxt-flavoured fork of @dimerapp/markdown",
   "main": "index.js",
   "files": [

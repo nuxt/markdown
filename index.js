@@ -16,7 +16,7 @@ const { checklist, relativeLinks } = require('./src/transformers')
 require('./src/macros')(macroEngine)
 
 // Safely escape {{ }} in code blocks using zero-width whitespace
-function escapeVueInMarkdown(raw) {
+function escapeVueInMarkdown (raw) {
   let c
   let i = 0
   let escaped = false

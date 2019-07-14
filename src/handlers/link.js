@@ -10,12 +10,13 @@ function link (h, node) {
     props.title = node.title
   }
 
-  if (url.startsWith('#')) {
+  if (url.startsWith('#') || url.match(/^https?:\/\//)) {
     props['href'] = url
     tagName = 'a'
   } else {
     props['to'] = url
     tagName = 'nuxt-link'
+    props['class'] = 'press-link'
   }
 
   return h(node, tagName, props, all(h, node))
