@@ -1,4 +1,6 @@
-[`@nuxt/markdown`][nm] is a Nuxt-flavoured fork of [`@dimerapp/markdown`][dm].
+# [`@nuxt/markdown`][nm] 
+
+A Nuxt-flavoured fork of [`@dimerapp/markdown`][dm].
 
 [nm]: https://github.com/nuxt/markdown
 [dm]: https://github.com/dimerapp/markdown
