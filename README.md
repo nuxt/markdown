@@ -1,8 +1,7 @@
-# [`@nuxt/markdown`][nm] 
+# @nuxt/markdown
 
 A Nuxt-flavoured fork of [`@dimerapp/markdown`][dm].
 
-[nm]: https://github.com/nuxt/markdown
 [dm]: https://github.com/dimerapp/markdown
 
 It's based on the [`unified`](https://unified.js.org/) set of utilities.
