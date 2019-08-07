@@ -1,52 +1,24 @@
-// Based on dimer-markdown
-// By Harminder Virk <virk@adonisjs.com>
 
-const unified = require('unified')
-const markdown = require('remark-parse')
-const slug = require('remark-slug')
-const headings = require('remark-autolink-headings')
-const squeezeParagraphs = require('remark-squeeze-paragraphs')
-const remark2rehype = require('remark-rehype')
-const rehypeRaw = require('rehype-raw')
-const rehypePrism = require('@mapbox/rehype-prism')
-const sanitize = require('rehype-sanitize')
-const macroEngine = require('remark-macro')()
-const headingHandler = require('./src/handlers/_heading')
-const { checklist, relativeLinks } = require('./src/transformers')
-require('./src/macros')(macroEngine)
+// NuxtMarkdown
+//
+// Based on dimer-markdown by Harminder Virk <virk@adonisjs.com>
 
-// Safely escape {{ }} in code blocks using zero-width whitespace
-function escapeVueInMarkdown (raw) {
-  let c
-  let i = 0
-  let escaped = false
-  let r = ''
-  for (i = 0; i < raw.length; i++) {
-    c = raw.charAt(i)
-    if (c === '`' && raw.slice(i, i + 3) === '```' && raw.charCodeAt(i - 1) !== 92) {
-      escaped = !escaped
-      r += raw.slice(i, i + 3)
-      i += 2
-      continue
-    } else if (c === '\`' && raw.charCodeAt(i - 1) !== 92) {
-      escaped = !escaped
-      r += c
-      continue
-    }
-    if (!escaped) {
-      r += c
-    } else if (c === '{' && raw.charAt(i + 1) === '{' && raw.charCodeAt(i - 1) !== 92) {
-      i += 1
-      r += '{\u200B{' // zero width white space character
-    } else {
-      r += c
-    }
-  }
-  return r
-}
+import unified from 'unified'
+import markdown from 'remark-parse'
+import slug from 'remark-slug'
+import headings from 'remark-autolink-headings'
+import squeezeParagraphs from 'remark-squeeze-paragraphs'
+import remark2rehype from 'remark-rehype'
+import rehypeRaw from 'rehype-raw'
+import rehypePrism from '@mapbox/rehype-prism'
+import sanitize from 'rehype-sanitize'
+import remarkMacro from 'remark-macro'
+import headingHandler from './src/handlers/_heading'
+
+const macroEngine = remarkMacro()
 
 // Proceses the markdown and output it to native HTML or components.
-class NuxtMarkdownProcessor {
+export default class NuxtMarkdownProcessor {
   constructor (markdown, options) {
     // backwards compatibility but tests still fails due to different white space handling
     if (
@@ -73,8 +45,10 @@ class NuxtMarkdownProcessor {
     macroEngine.addMacro(name, callback, inline)
   }
 
-  _createPreset ({ settings = {}, handlers } = {}) {
-    const _sanitize = this.options.sanitize ? [[sanitize, this.settings.sanitize]] : []
+  createPreset ({ settings = {}, handlers } = {}) {
+    const _sanitize = this.options.sanitize
+      ? [[sanitize, this.settings.sanitize]]
+      : []
 
     if (this.options.toc) {
       handlers = {
@@ -87,7 +61,6 @@ class NuxtMarkdownProcessor {
       settings,
       plugins: [
         markdown,
-        [relativeLinks, this.options],
         slug,
         headings,
         macroEngine.transformer,
@@ -107,15 +80,14 @@ class NuxtMarkdownProcessor {
     }
   }
 
-  _tocReset () {
+  resetToc () {
     this.toc = []
-
     return this
   }
 
   createProcessor (config) {
     if (!this.preset) {
-      this.preset = this._createPreset(config)
+      this.preset = this.createPreset(config)
     }
 
     this.processor = unified().use(this.preset)
@@ -140,11 +112,9 @@ class NuxtMarkdownProcessor {
   }
 
   async toMarkup (markdown) {
-    markdown = escapeVueInMarkdown(markdown)
     this._tocReset()
 
     const { contents: html } = await this.toHTML(markdown)
-
     return { html, toc: this.toc }
   }
 
@@ -168,5 +138,3 @@ class NuxtMarkdownProcessor {
     return file
   }
 }
-
-module.exports = NuxtMarkdownProcessor
