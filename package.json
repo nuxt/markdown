@@ -52,11 +52,6 @@
     "vfile": "^3.0.0",
     "yorkie": "^2.0.0"
   },
-  "nyc": {
-    "exclude": [
-      "test"
-    ]
-  },
   "directories": {
     "example": "example",
     "test": "test"
