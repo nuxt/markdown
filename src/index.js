@@ -14,7 +14,9 @@ import sanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkMacro from 'remark-macro'
 import autolinkHeadings from './headings'
-import headingHandler from './src/handlers/_heading'
+import handlers from './handlers'
+import sanitizeOptions from './sanitize'
+import { escapeVueInMarkdown } from './utils'
 
 const macroEngine = remarkMacro()
 
@@ -34,8 +36,8 @@ export default class NuxtMarkdownProcessor {
     this.markdown = markdown
 
     this.settings = {
-      sanitize: require('./sanitize.json'),
-      handlers: require('./src/handlers')
+      sanitize: sanitizeOptions,
+      handlers
     }
 
     this.options = options || {}
@@ -66,7 +68,6 @@ export default class NuxtMarkdownProcessor {
         autolinkHeadings,
         macroEngine.transformer,
         squeezeParagraphs,
-        [checklist, this.options],
         [remark2rehype, {
           allowDangerousHTML: true,
           handlers: {
@@ -113,19 +114,18 @@ export default class NuxtMarkdownProcessor {
   }
 
   async toMarkup (markdown) {
-    this._tocReset()
+    this.tocReset()
 
-    const { contents: html } = await this.toHTML(markdown)
+    markdown = escapeVueInMarkdown(markdown || this.markdown)
+
+    const { contents: html } = await this.newProcessor()
+      .use(rehypeStringify)
+      .process(markdown)
+
     return { html, toc: this.toc }
   }
 
   // Converts markdown to HTML
   async toHTML (markdown) {
-    markdown = escapeVueInMarkdown(markdown || this.markdown)
-    const file = await this.newProcessor()
-      .use(rehypeStringify)
-      .process(markdown)
-
-    return file
   }
 }

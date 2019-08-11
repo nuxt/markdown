@@ -21,7 +21,7 @@ export function parseThematicBlock (lang) {
 }
 
 // Safely escape {{ }} in code blocks using zero-width whitespace
-function escapeVueInMarkdown (raw) {
+export function escapeVueInMarkdown (raw) {
   let c
   let i = 0
   let escaped = false
