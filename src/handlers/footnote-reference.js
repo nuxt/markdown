@@ -1,14 +1,11 @@
-'use strict'
 
-module.exports = footnoteReference
+import u from 'unist-builder'
 
-var u = require('unist-builder')
+export default function footnoteReference (h, node) {
+  const footnoteOrder = h.footnoteOrder
+  const identifier = node.identifier
 
-function footnoteReference(h, node) {
-  var footnoteOrder = h.footnoteOrder
-  var identifier = node.identifier
-
-  if (footnoteOrder.indexOf(identifier) === -1) {
+  if (!footnoteOrder.includes(identifier)) {
     footnoteOrder.push(identifier)
   }
 
