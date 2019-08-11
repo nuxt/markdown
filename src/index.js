@@ -6,7 +6,7 @@
 import unified from 'unified'
 import markdown from 'remark-parse'
 import slug from 'remark-slug'
-import headings from 'remark-autolink-headings'
+import autolinkHeadings from './headings'
 import squeezeParagraphs from 'remark-squeeze-paragraphs'
 import remark2rehype from 'remark-rehype'
 import rehypeRaw from 'rehype-raw'
@@ -63,7 +63,7 @@ export default class NuxtMarkdownProcessor {
       plugins: [
         markdown,
         slug,
-        headings,
+        autolinkHeadings,
         macroEngine.transformer,
         squeezeParagraphs,
         [checklist, this.options],
