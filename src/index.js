@@ -6,7 +6,6 @@
 import unified from 'unified'
 import markdown from 'remark-parse'
 import slug from 'remark-slug'
-import autolinkHeadings from './headings'
 import squeezeParagraphs from 'remark-squeeze-paragraphs'
 import remark2rehype from 'remark-rehype'
 import rehypeRaw from 'rehype-raw'
@@ -14,6 +13,7 @@ import rehypePrism from '@mapbox/rehype-prism'
 import sanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkMacro from 'remark-macro'
+import autolinkHeadings from './headings'
 import headingHandler from './src/handlers/_heading'
 
 const macroEngine = remarkMacro()
@@ -128,5 +128,4 @@ export default class NuxtMarkdownProcessor {
 
     return file
   }
-
 }

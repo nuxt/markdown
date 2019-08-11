@@ -1,16 +1,16 @@
+import all from 'mdast-util-to-hast/lib/all'
 'use strict'
 
 module.exports = list
 
-var wrap = require('../wrap')
-import all from 'mdast-util-to-hast/lib/all'
+const wrap = require('../wrap')
 
-function list(h, node) {
-  var props = {}
-  var name = node.ordered ? 'ol' : 'ul'
-  var items
-  var index = -1
-  var length
+function list (h, node) {
+  const props = {}
+  const name = node.ordered ? 'ol' : 'ul'
+  let items
+  let index = -1
+  let length
 
   if (typeof node.start === 'number' && node.start !== 1) {
     props.start = node.start
@@ -23,7 +23,7 @@ function list(h, node) {
   while (++index < length) {
     if (
       items[index].properties.className &&
-      items[index].properties.className.indexOf('task-list-item') !== -1
+      items[index].properties.className.includes('task-list-item')
     ) {
       props.className = ['contains-task-list']
       break

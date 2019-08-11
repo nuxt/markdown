@@ -1,19 +1,15 @@
-'use strict'
+import normalize from 'mdurl/encode'
+import revert from 'mdast-util-to-hast/lib/revert'
 
-module.exports = imageReference
-
-var normalize = require('mdurl/encode')
-var revert = require('../revert')
-
-function imageReference(h, node) {
-  var def = h.definition(node.identifier)
-  var props
+function imageReference (h, node) {
+  const def = h.definition(node.identifier)
+  let props
 
   if (!def) {
     return revert(h, node)
   }
 
-  props = {src: normalize(def.url || ''), alt: node.alt}
+  props = { src: normalize(def.url || ''), alt: node.alt }
 
   if (def.title !== null && def.title !== undefined) {
     props.title = def.title

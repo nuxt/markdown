@@ -8,10 +8,10 @@ const wrap = 'wrap'
 
 const methodMap = {
   prepend: 'unshift',
-  append: 'push',
+  append: 'push'
 }
 
-function base(node, callback) {
+function base (node, callback) {
   const { data } = node
   if (!data || !data.hProperties || !data.hProperties.id) {
     return
@@ -22,18 +22,18 @@ function base(node, callback) {
 const contentDefaults = {
   type: 'element',
   tagName: 'span',
-  properties: {className: [icon, `${icon}-${link}`]},
+  properties: { className: [icon, `${icon}-${link}`] }
 }
 
 export default function attacher (opts = {}) {
   let { linkProperties, behaviour, content } = {
     behaviour: 'prepend',
     content: contentDefaults,
-    ...opts,
+    ...opts
   }
 
   if (behaviour !== wrap && !linkProperties) {
-    linkProperties = {'aria-hidden': true}
+    linkProperties = { 'aria-hidden': true }
   }
 
   function injectNode (node) {
@@ -47,8 +47,8 @@ export default function attacher (opts = {}) {
         title: null,
         data: {
           hProperties: linkProperties,
-          hChildren: content,
-        },
+          hChildren: content
+        }
       })
     })
   }

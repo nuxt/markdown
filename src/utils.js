@@ -1,7 +1,7 @@
 
 // Parses the value defined next to 3 back ticks
 // in a codeblock and set line-highlights or filename from it
-export function parseThematicBlock(lang) {
+export function parseThematicBlock (lang) {
   if (!lang) {
     return {
       lang: null,

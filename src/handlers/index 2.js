@@ -30,6 +30,6 @@ module.exports = {
 }
 
 // Return nothing for nodes that are ignored.
-function ignore() {
+function ignore () {
   return null
 }

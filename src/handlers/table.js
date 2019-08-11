@@ -1,22 +1,22 @@
+import all from 'mdast-util-to-hast/lib/all'
 'use strict'
 
 module.exports = table
 
-var position = require('unist-util-position')
-var wrap = require('../wrap')
-import all from 'mdast-util-to-hast/lib/all'
+const position = require('unist-util-position')
+const wrap = require('../wrap')
 
-function table(h, node) {
-  var rows = node.children
-  var index = rows.length
-  var align = node.align
-  var alignLength = align.length
-  var result = []
-  var pos
-  var row
-  var out
-  var name
-  var cell
+function table (h, node) {
+  const rows = node.children
+  let index = rows.length
+  const align = node.align
+  const alignLength = align.length
+  const result = []
+  let pos
+  let row
+  let out
+  let name
+  let cell
 
   while (index--) {
     row = rows[index].children
@@ -26,7 +26,7 @@ function table(h, node) {
 
     while (pos--) {
       cell = row[pos]
-      out[pos] = h(cell, name, {align: align[pos]}, cell ? all(h, cell) : [])
+      out[pos] = h(cell, name, { align: align[pos] }, cell ? all(h, cell) : [])
     }
 
     result[index] = h(rows[index], 'tr', wrap(out, true))

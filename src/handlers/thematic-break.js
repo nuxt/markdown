@@ -2,6 +2,6 @@
 
 module.exports = thematicBreak
 
-function thematicBreak(h, node) {
+function thematicBreak (h, node) {
   return h(node, 'hr')
 }

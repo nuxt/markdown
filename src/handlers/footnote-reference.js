@@ -9,8 +9,8 @@ export default function footnoteReference (h, node) {
     footnoteOrder.push(identifier)
   }
 
-  return h(node.position, 'sup', {id: 'fnref-' + identifier}, [
-    h(node, 'a', {href: '#fn-' + identifier, className: ['footnote-ref']}, [
+  return h(node.position, 'sup', { id: 'fnref-' + identifier }, [
+    h(node, 'a', { href: '#fn-' + identifier, className: ['footnote-ref'] }, [
       u('text', node.label || identifier)
     ])
   ])

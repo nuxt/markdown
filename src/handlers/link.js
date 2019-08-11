@@ -1,5 +1,5 @@
-const normalize = require('mdurl/encode')
 import all from 'mdast-util-to-hast/lib/all'
+const normalize = require('mdurl/encode')
 
 function link (h, node) {
   let tagName
@@ -11,10 +11,10 @@ function link (h, node) {
   }
 
   if (url.startsWith('#') || url.match(/^https?:\/\//)) {
-    props['href'] = url
+    props.href = url
     tagName = 'a'
   } else {
-    props['to'] = url
+    props.to = url
     tagName = 'nuxt-link'
     props['data-press-link'] = 'true'
   }

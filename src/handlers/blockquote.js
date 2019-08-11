@@ -2,6 +2,6 @@
 import wrap from 'mdast-util-to-hast/lib/wrap'
 import all from 'mdast-util-to-hast/lib/all'
 
-export default function blockquote(h, node) {
+export default function blockquote (h, node) {
   return h(node, 'blockquote', wrap(all(h, node), true))
 }

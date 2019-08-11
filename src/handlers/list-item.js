@@ -1,19 +1,19 @@
 
-var u = require('unist-builder')
-var wrap = require('../wrap')
+import u from 'unist-builder'
+import wrap from 'mdast-util-to-hast/lib/wrap'
 import all from 'mdast-util-to-hast/lib/all'
 
-function listItem(h, node, parent) {
-  var children = node.children
-  var head = children[0]
-  var raw = all(h, node)
-  var loose = parent ? listLoose(parent) : listItemLoose(node)
-  var props = {}
-  var result
-  var container
-  var index
-  var length
-  var child
+export default function listItem (h, node, parent) {
+  const children = node.children
+  const head = children[0]
+  const raw = all(h, node)
+  const loose = parent ? listLoose(parent) : listItemLoose(node)
+  const props = {}
+  let result
+  let container
+  let index
+  let length
+  let child
 
   // Tight lists should not render `paragraph` nodes as `p` elements.
   if (loose) {
@@ -65,11 +65,11 @@ function listItem(h, node, parent) {
   return h(node, 'li', props, result)
 }
 
-function listLoose(node) {
-  var loose = node.spread
-  var children = node.children
-  var length = children.length
-  var index = -1
+function listLoose (node) {
+  let loose = node.spread
+  const children = node.children
+  const length = children.length
+  let index = -1
 
   while (!loose && ++index < length) {
     loose = listItemLoose(children[index])
@@ -78,8 +78,8 @@ function listLoose(node) {
   return loose
 }
 
-function listItemLoose(node) {
-  var spread = node.spread
+function listItemLoose (node) {
+  const spread = node.spread
 
   return spread === undefined || spread === null
     ? node.children.length > 1

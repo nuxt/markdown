@@ -1,20 +1,20 @@
+import revert from 'mdast-util-to-hast/lib/revert'
+import all from 'mdast-util-to-hast/lib/all'
 'use strict'
 
 module.exports = linkReference
 
-var normalize = require('mdurl/encode')
-var revert = require('../revert')
-import all from 'mdast-util-to-hast/lib/all'
+const normalize = require('mdurl/encode')
 
-function linkReference(h, node) {
-  var def = h.definition(node.identifier)
-  var props
+function linkReference (h, node) {
+  const def = h.definition(node.identifier)
+  let props
 
   if (!def) {
     return revert(h, node)
   }
 
-  props = {href: normalize(def.url || '')}
+  props = { href: normalize(def.url || '') }
 
   if (def.title !== null && def.title !== undefined) {
     props.title = def.title
