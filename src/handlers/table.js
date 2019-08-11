@@ -1,12 +1,8 @@
 import all from 'mdast-util-to-hast/lib/all'
-'use strict'
+import wrap from 'mdast-util-to-hast/lib/wrap'
+import position from 'unist-util-position'
 
-module.exports = table
-
-const position = require('unist-util-position')
-const wrap = require('../wrap')
-
-function table (h, node) {
+export default function table (h, node) {
   const rows = node.children
   let index = rows.length
   const align = node.align

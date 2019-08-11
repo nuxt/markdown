@@ -1,11 +1,7 @@
 import all from 'mdast-util-to-hast/lib/all'
-'use strict'
+import wrap from 'mdast-util-to-hast/lib/wrap'
+import u from 'unist-builder'
 
-module.exports = root
-
-const u = require('unist-builder')
-const wrap = require('../wrap')
-
-function root (h, node) {
+export default function root (h, node) {
   return h.augment(node, u('root', wrap(all(h, node))))
 }

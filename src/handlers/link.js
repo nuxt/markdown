@@ -1,7 +1,7 @@
 import all from 'mdast-util-to-hast/lib/all'
-const normalize = require('mdurl/encode')
+import normalize from 'mdurl/encode'
 
-function link (h, node) {
+export default function link (h, node) {
   let tagName
   const url = normalize(node.url)
   const props = {}
@@ -21,5 +21,3 @@ function link (h, node) {
 
   return h(node, tagName, props, all(h, node))
 }
-
-module.exports = link
