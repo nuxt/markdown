@@ -1,11 +1,10 @@
-'use strict'
+import normalize from 'mdurl/encode'
 
-const normalize = require('mdurl/encode')
-
-module.exports = image
-
-function image (h, node) {
-  const props = { src: normalize(node.url), alt: node.alt }
+export default function image (h, node) {
+  const props = {
+    src: normalize(node.url),
+    alt: node.alt
+  }
 
   if (node.title !== null && node.title !== undefined) {
     props.title = node.title
