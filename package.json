@@ -3,6 +3,10 @@
   "version": "0.0.10",
   "description": "Nuxt-flavoured fork of @dimerapp/markdown",
   "main": "dist/nuxt-markdown.js",
+  "scripts": {
+    "dist": "rollup -c rollup.config.js",
+    "lint": "eslint --ignore-path .gitignore --fix --ext .js src"
+  },
   "files": [
     "dist"
   ],
@@ -43,5 +47,15 @@
   "homepage": "https://github.com/nuxt/markdown#readme",
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.15.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^5.2.3"
   }
 }
