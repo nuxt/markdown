@@ -1,7 +1,7 @@
 import normalize from 'mdurl/encode'
 import revert from 'mdast-util-to-hast/lib/revert'
 
-function imageReference (h, node) {
+export default function imageReference (h, node) {
   const def = h.definition(node.identifier)
   let props
 

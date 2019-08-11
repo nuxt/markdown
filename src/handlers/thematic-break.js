@@ -1,7 +1,3 @@
-'use strict'
-
-module.exports = thematicBreak
-
-function thematicBreak (h, node) {
+export default function thematicBreak (h, node) {
   return h(node, 'hr')
 }
