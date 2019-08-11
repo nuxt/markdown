@@ -12,6 +12,7 @@ import remark2rehype from 'remark-rehype'
 import rehypeRaw from 'rehype-raw'
 import rehypePrism from '@mapbox/rehype-prism'
 import sanitize from 'rehype-sanitize'
+import rehypeStringify from 'rehype-stringify'
 import remarkMacro from 'remark-macro'
 import headingHandler from './src/handlers/_heading'
 
@@ -120,21 +121,12 @@ export default class NuxtMarkdownProcessor {
 
   // Converts markdown to HTML
   async toHTML (markdown) {
-    markdown = escapeVueInMarkdown(markdown)
+    markdown = escapeVueInMarkdown(markdown || this.markdown)
     const file = await this.newProcessor()
-      .use(require('./src/compilers/html'))
-      .process(markdown || this.markdown)
+      .use(rehypeStringify)
+      .process(markdown)
 
     return file
   }
 
-  // Converts the markdown document to it's JSON structure.
-  // Super helpful for JSON API's
-  async toJSON (markdown) {
-    const file = await this.newProcessor()
-      .use(require('./src/compilers/json'))
-      .process(markdown || this.markdown)
-
-    return file
-  }
 }
