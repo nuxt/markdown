@@ -1,4 +1,4 @@
-const all = require('mdast-util-to-hast/lib/all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function extractText (node) {
   let text = ''
@@ -15,7 +15,7 @@ function extractText (node) {
   return text
 }
 
-function heading (h, node) {
+export default function heading (h, node) {
   let link
 
   const _link = node.children.find(c => c.type === 'link')
@@ -30,5 +30,3 @@ function heading (h, node) {
 
   return h(node, `h${node.depth}`, all(h, node))
 }
-
-module.exports = heading
