@@ -22,24 +22,11 @@ const macroEngine = remarkMacro()
 
 // Proceses the markdown and output it to native HTML or components.
 export default class NuxtMarkdownProcessor {
-  constructor (markdown, options) {
-    // backwards compatibility but tests still fails due to different white space handling
-    if (
-      arguments.length === 1 &&
-      typeof markdown === 'object' &&
-      (!markdown.constructor || markdown.constructor.name !== 'VFile')
-    ) {
-      options = markdown
-      markdown = undefined
-    }
-
-    this.markdown = markdown
-
+  constructor (options) {
     this.settings = {
       sanitize: sanitizeOptions,
       handlers
     }
-
     this.options = options || {}
   }
 
@@ -52,13 +39,6 @@ export default class NuxtMarkdownProcessor {
     const _sanitize = this.options.sanitize
       ? [[sanitize, this.settings.sanitize]]
       : []
-
-    if (this.options.toc) {
-      handlers = {
-        ...handlers,
-        heading: headingHandler.bind(this)
-      }
-    }
 
     return {
       settings,
@@ -125,7 +105,4 @@ export default class NuxtMarkdownProcessor {
     return { html, toc: this.toc }
   }
 
-  // Converts markdown to HTML
-  async toHTML (markdown) {
-  }
 }

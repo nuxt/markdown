@@ -33,7 +33,7 @@ export function escapeVueInMarkdown (raw) {
       r += raw.slice(i, i + 3)
       i += 2
       continue
-    } else if (c === '\`' && raw.charCodeAt(i - 1) !== 92) {
+    } else if (c === '`' && raw.charCodeAt(i - 1) !== 92) {
       escaped = !escaped
       r += c
       continue

@@ -24,7 +24,7 @@ export default function heading (h, node) {
   }
 
   const text = extractText(node)
-  if (text && link) {
+  if (this.toc && text && link) {
     this.toc.push([node.depth, text, link])
   }
 

@@ -1,7 +1,7 @@
 import blockquote from './blockquote'
-import { default as _break } from './break'
+import _break from './break'
 import code from './code'
-import { default as _delete } from './delete'
+import _delete from './delete'
 import emphasis from './emphasis'
 import footnoteReference from './footnote-reference'
 import footnote from './footnote'
@@ -21,7 +21,7 @@ import table from './table'
 import text from './text'
 import thematicBreak from './thematic-break'
 
-module.exports = {
+export default {
   blockquote,
   code,
   emphasis,

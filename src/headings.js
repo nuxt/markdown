@@ -16,6 +16,7 @@ function base (node, callback) {
   if (!data || !data.hProperties || !data.hProperties.id) {
     return
   }
+  // eslint-disable-next-line standard/no-callback-literal
   return callback(`#${data.hProperties.id}`)
 }
 
@@ -26,8 +27,8 @@ const contentDefaults = {
 }
 
 export default function attacher (opts = {}) {
+  // eslint-disable-next-line prefer-const
   let { linkProperties, behaviour, content } = {
-    behaviour: 'prepend',
     content: contentDefaults,
     ...opts
   }
