@@ -3,7 +3,7 @@
 module.exports = list
 
 var wrap = require('../wrap')
-var all = require('../all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function list(h, node) {
   var props = {}

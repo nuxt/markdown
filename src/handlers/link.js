@@ -1,5 +1,5 @@
 const normalize = require('mdurl/encode')
-const all = require('mdast-util-to-hast/lib/all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function link (h, node) {
   let tagName

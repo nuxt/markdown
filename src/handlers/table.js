@@ -4,7 +4,7 @@ module.exports = table
 
 var position = require('unist-util-position')
 var wrap = require('../wrap')
-var all = require('../all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function table(h, node) {
   var rows = node.children

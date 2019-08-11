@@ -4,7 +4,7 @@ module.exports = linkReference
 
 var normalize = require('mdurl/encode')
 var revert = require('../revert')
-var all = require('../all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function linkReference(h, node) {
   var def = h.definition(node.identifier)

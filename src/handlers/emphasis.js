@@ -1,9 +1,5 @@
-'use strict'
+import all from 'mdast-util-to-hast/lib/all'
 
-module.exports = emphasis
-
-var all = require('../all')
-
-function emphasis(h, node) {
+export default function emphasis(h, node) {
   return h(node, 'em', all(h, node))
 }

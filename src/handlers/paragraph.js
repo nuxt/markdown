@@ -2,7 +2,7 @@
 
 module.exports = paragraph
 
-var all = require('../all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function paragraph(h, node) {
   return h(node, 'p', all(h, node))

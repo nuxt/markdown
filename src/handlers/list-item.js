@@ -1,10 +1,7 @@
-'use strict'
-
-module.exports = listItem
 
 var u = require('unist-builder')
 var wrap = require('../wrap')
-var all = require('../all')
+import all from 'mdast-util-to-hast/lib/all'
 
 function listItem(h, node, parent) {
   var children = node.children
