@@ -1,13 +1,9 @@
-'use strict'
+import footnoteReference from './footnote-reference'
 
-module.exports = footnote
-
-var footnoteReference = require('./footnote-reference')
-
-function footnote(h, node) {
-  var footnoteById = h.footnoteById
-  var footnoteOrder = h.footnoteOrder
-  var identifier = 1
+export default function footnote (h, node) {
+  const footnoteById = h.footnoteById
+  const footnoteOrder = h.footnoteOrder
+  let identifier = 1
 
   while (identifier in footnoteById) {
     identifier++
@@ -20,15 +16,15 @@ function footnote(h, node) {
   footnoteOrder.push(identifier)
 
   footnoteById[identifier] = {
+    identifier,
     type: 'footnoteDefinition',
-    identifier: identifier,
-    children: [{type: 'paragraph', children: node.children}],
+    children: [{ type: 'paragraph', children: node.children }],
     position: node.position
   }
 
   return footnoteReference(h, {
+    identifier,
     type: 'footnoteReference',
-    identifier: identifier,
     position: node.position
   })
 }
