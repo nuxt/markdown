@@ -4,13 +4,13 @@
 // Based on dimer-markdown by Harminder Virk <virk@adonisjs.com>
 
 import unified from 'unified'
-import markdown from 'remark-parse'
-import slug from 'remark-slug'
+import remarkParse from 'remark-parse'
+import remarkSlug from 'remark-slug'
 import squeezeParagraphs from 'remark-squeeze-paragraphs'
-import remark2rehype from 'remark-rehype'
+import remarkRehype from 'remark-rehype'
 import rehypeRaw from 'rehype-raw'
 import rehypePrism from '@mapbox/rehype-prism'
-import sanitize from 'rehype-sanitize'
+import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkMacro from 'remark-macro'
 import autolinkHeadings from './headings'
@@ -18,91 +18,99 @@ import handlers from './handlers'
 import sanitizeOptions from './sanitize'
 import { escapeVueInMarkdown } from './utils'
 
-const macroEngine = remarkMacro()
 
-// Proceses the markdown and output it to native HTML or components.
-export default class NuxtMarkdownProcessor {
-  constructor (options) {
-    this.settings = {
-      sanitize: sanitizeOptions,
-      handlers
-    }
-    this.options = options || {}
-  }
+export default class NuxtMarkdown {
 
-  // Register a custom macro with the markdown engine
-  static addMacro (name, callback, inline) {
-    macroEngine.addMacro(name, callback, inline)
-  }
+  static macroEngine = remarkMacro()
 
-  createPreset ({ settings = {}, handlers } = {}) {
-    const _sanitize = this.options.sanitize
-      ? [[sanitize, this.settings.sanitize]]
-      : []
+  static layers = [
+    ['remark-parse', remarkParse],
+    ['remark-slug', remarkSlug],
+    ['remark-autolink-headings', autolinkHeadings],
+    ['remark-macro', NuxtMarkdown.macroEngine.transformer],
+    ['remark-squeeze-paragraphs', squeezeParagraphs],
+    ['remark-rehype', remarkRehype, { allowDangerousHTML: true }],
+    ['rehype-raw', rehypeRaw],
+    ['rehype-prism', rehypePrism, { ignoreMissing: true }],
+    ['rehype-stringify', rehypeStringify]
+  ]
 
-    return {
-      settings,
-      plugins: [
-        markdown,
-        slug,
-        autolinkHeadings,
-        macroEngine.transformer,
-        squeezeParagraphs,
-        [remark2rehype, {
-          allowDangerousHTML: true,
-          handlers: {
-            ...this.settings.handlers,
-            ...handlers
-          }
-        }],
-        rehypeRaw,
-        [rehypePrism, { ignoreMissing: true }],
-        ..._sanitize
-      ]
-    }
-  }
+  constructor ({ toc, sanitize, handlers, extend }) {
+    this.layers = [ ...this.constructor.layers ]
 
-  resetToc () {
-    this.toc = []
-    return this
-  }
-
-  createProcessor (config) {
-    if (!this.preset) {
-      this.preset = this.createPreset(config)
-    }
-
-    this.processor = unified().use(this.preset)
-
-    return new Proxy(this, {
-      get (target, prop) {
-        if (target.processor[prop]) {
-          return target.processor[prop]
+    const extendLayerProxy = new Proxy(this.layers, {
+      get: (_, prop) {
+        return this.layers.find(l => l[0] === prop)
+      },
+      set: (_, prop, value) {
+        if (!Array.isArray(value)) {
+          value = [prop, value, {}]
+        } else {
+          value.unshift(prop)
         }
-
-        return target[prop]
+        this.layers.push(value)
+        return value
       }
     })
-  }
 
-  newProcessor () {
-    if (!this.processor) {
-      this.createProcessor()
+    const registerMacroProxy = new Proxy({}, {
+      get: (_, name) => {
+        return (callback, inline) => {
+          NuxtMarkdown.macroEngine.addMacro(name, callback, inline)
+        }
+      }
+    })
+
+    extendLayerProxy['remark-rehype'][2].handlers = handlers
+
+    if (sanitize) {
+      extendLayerProxy['rehype-sanitize'] = [rehypeSanitize, sanitizeOptions]
     }
 
-    return this.processor()
+    this.options = { toc }
+
+    extend({
+      layers: extendLayerProxy,
+      macros: registerMacroProxy
+    })
+
+    return this.processor
   }
 
+  get toc () {
+    if (!this.options.toc) {
+      return
+    }
+    return this._toc
+  }
+
+  set toc (v) {
+    if (!this.options.toc) {
+      return
+    }
+    this._toc = v 
+  }
+  
+  get processor () {
+    if (this._processor) {
+      return this._processor
+    }
+
+    this._processor = unified()
+      .use({
+        settings: { handlers, ...this.options.sanitize && { sanitize: sanitizeOptions },
+        plugins: this.layers.map(l => l.slice(1))
+      })
+
+    return this._processor
+  }
+  
   async toMarkup (markdown) {
-    this.tocReset()
+    this.toc = []
+    markdown = escapeVueInMarkdown(markdown)
 
-    markdown = escapeVueInMarkdown(markdown || this.markdown)
+    const { contents: html } = await this.processor.process(markdown)
 
-    const { contents: html } = await this.newProcessor()
-      .use(rehypeStringify)
-      .process(markdown)
-
-    return { html, toc: this.toc }
+    return { html, ...this.options.toc && { toc: this.toc } }
   }
-
 }
