@@ -18,9 +18,7 @@ import handlers from './handlers'
 import sanitizeOptions from './sanitize'
 import { escapeVueInMarkdown } from './utils'
 
-
 export default class NuxtMarkdown {
-
   static macroEngine = remarkMacro()
 
   static layers = [
@@ -39,10 +37,10 @@ export default class NuxtMarkdown {
     this.layers = [ ...this.constructor.layers ]
 
     const extendLayerProxy = new Proxy(this.layers, {
-      get: (_, prop) {
+      get: (_, prop) => {
         return this.layers.find(l => l[0] === prop)
       },
-      set: (_, prop, value) {
+      set: (_, prop, value) => {
         if (!Array.isArray(value)) {
           value = [prop, value, {}]
         } else {
@@ -88,9 +86,9 @@ export default class NuxtMarkdown {
     if (!this.options.toc) {
       return
     }
-    this._toc = v 
+    this._toc = v
   }
-  
+
   get processor () {
     if (this._processor) {
       return this._processor
@@ -98,13 +96,13 @@ export default class NuxtMarkdown {
 
     this._processor = unified()
       .use({
-        settings: { handlers, ...this.options.sanitize && { sanitize: sanitizeOptions },
+        settings: { handlers, ...this.options.sanitize && { sanitize: sanitizeOptions } },
         plugins: this.layers.map(l => l.slice(1))
       })
 
     return this._processor
   }
-  
+
   async toMarkup (markdown) {
     this.toc = []
     markdown = escapeVueInMarkdown(markdown)
