@@ -29,6 +29,7 @@ const contentDefaults = {
 export default function attacher (opts = {}) {
   // eslint-disable-next-line prefer-const
   let { linkProperties, behaviour, content } = {
+    behaviour: 'prepend',
     content: contentDefaults,
     ...opts
   }

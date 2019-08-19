@@ -1,10 +1,10 @@
 {
   "name": "@nuxt/markdown",
-  "version": "0.0.10",
+  "version": "0.0.20",
   "description": "Nuxt-flavoured fork of @dimerapp/markdown",
   "main": "dist/nuxt-markdown.js",
   "scripts": {
-    "dist": "rollup -c rollup.config.js",
+    "dist": "rimraf dist && rollup -c rollup.config.js",
     "lint": "eslint --ignore-path .gitignore --fix --ext .js src"
   },
   "files": [

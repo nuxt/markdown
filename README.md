@@ -32,15 +32,39 @@ const md = new Markdown({
 const rendered = await md.toMarkup(markdownSourceString)
 ```
 
-Assigning is equivalent to **pushing** to the internal layers Array. You can also use Array methods directly:
+Assigning is equivalent to **pushing** to the **last second position** of the internal `layers` Array. You can also use Array methods directly:
 
 ```js
 const md = new Markdown({
   extend({ layers }) {
-    layers.push(['remark-container', remarkContainer])
+    layers.splice(pos, 0, ['remark-container', remarkContainer])
   }
 })
 ```
+
+This is the default `layers` Array provided to a `@nuxt/markdown` instance:
+
+```js
+const layers = [
+  ['remark-parse', remarkParse],
+  ['remark-slug', remarkSlug],
+  ['remark-autolink-headings', autolinkHeadings],
+  ['remark-macro', macroEngine.transformer],
+  ['remark-squeeze-paragraphs', squeezeParagraphs],
+  ['remark-rehype', remarkRehype, { allowDangerousHTML: true }],
+  ['rehype-raw', rehypeRaw],
+  ['rehype-prism', rehypePrism, { ignoreMissing: true }],
+  ['rehype-stringify', rehypeStringify]
+]
+```
+
+Each layer begins with an arbitrary id, to make addressing specific layers easier.
+
+## Custom remark-rehype handlers
+
+You can also pass in a `handlers` object to the `Markdown` constructor to define custom [remark-rehype](https://github.com/remarkjs/remark-rehype) handlers.
+
+See a [list of available overridable handlers here](https://github.com/nuxt/markdown/tree/develop/src/handlers).
 
 ## Adding macros
 

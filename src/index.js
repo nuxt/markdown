@@ -14,7 +14,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkMacro from 'remark-macro'
 import autolinkHeadings from './headings'
-import handlers from './handlers'
+import builtinHandlers from './handlers'
 import sanitizeOptions from './sanitize.json'
 import { escapeVueInMarkdown } from './utils'
 
@@ -32,7 +32,15 @@ const layers = [
 ]
 
 export default class NuxtMarkdown {
-  constructor ({ toc, sanitize, handlers, extend }) {
+  constructor (config = {}) {
+    const { toc, sanitize, handlers, extend } = {
+      toc: false,
+      sanitize: false,
+      handlers: {},
+      extend: () => {},
+      ...config
+    }
+
     this.layers = [ ...layers ]
 
     const extendLayerProxy = new Proxy(this.layers, {
@@ -48,7 +56,7 @@ export default class NuxtMarkdown {
         } else {
           value.unshift(prop)
         }
-        this.layers.push(value)
+        this.layers.splice(this.layers.length - 1, 0, value)
         return value
       }
     })
@@ -66,10 +74,13 @@ export default class NuxtMarkdown {
       }
     })
 
-    extendLayerProxy['remark-rehype'][2].handlers = handlers
+    extendLayerProxy['remark-rehype'][2].handlers = Object.assign(builtinHandlers, handlers || {})
+    for (const handler in extendLayerProxy['remark-rehype'][2].handlers) {
+      extendLayerProxy['remark-rehype'][2].handlers[handler] = extendLayerProxy['remark-rehype'][2].handlers[handler].bind(this)
+    }
 
     if (sanitize) {
-      extendLayerProxy['rehype-sanitize'] = [rehypeSanitize, sanitizeOptions]
+      this.layers.splice(this.layers.length - 1, 0, ['rehype-sanitize', rehypeSanitize, sanitizeOptions])
     }
 
     this.options = { toc }
@@ -78,8 +89,6 @@ export default class NuxtMarkdown {
       layers: extendLayerProxy,
       macros: registerMacroProxy
     })
-
-    return this.processor
   }
 
   get toc () {
@@ -102,10 +111,7 @@ export default class NuxtMarkdown {
     }
 
     this._processor = unified()
-      .use({
-        settings: { handlers, ...this.options.sanitize && { sanitize: sanitizeOptions } },
-        plugins: this.layers.map(l => l.slice(1))
-      })
+      .use({ plugins: this.layers.map(l => l.slice(1)) })
 
     return this._processor
   }
