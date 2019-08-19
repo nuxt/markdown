@@ -39,7 +39,10 @@
   },
   "keywords": [
     "markdown",
-    "nuxt"
+    "markdown-to-html",
+    "markdown-parser",
+    "nuxt",
+    "nuxtjs"
   ],
   "bugs": {
     "url": "https://github.com/nuxt/markdown/issues"
