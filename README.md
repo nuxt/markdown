@@ -32,7 +32,11 @@ const md = new Markdown({
 const rendered = await md.toMarkup(markdownSourceString)
 ```
 
-Assigning is equivalent to **pushing** to the **last second position** of the internal `layers` Array. You can also use Array methods directly:
+Assigning is equivalent to **pushing** to the **last second position** of the internal `layers` Array. 
+
+This is because the last step is `rehype-stringify`, responsible for the final HTML output, but we still want to be able to customize/remove that if needed.
+
+You can also use Array methods directly:
 
 ```js
 const md = new Markdown({
