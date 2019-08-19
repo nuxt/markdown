@@ -1,6 +1,7 @@
 import path from 'path'
 import { readJSONSync } from 'fs-extra'
 import commonjsPlugin from 'rollup-plugin-commonjs'
+import jsonPlugin from 'rollup-plugin-json'
 import autoExternalPlugin from 'rollup-plugin-auto-external'
 
 const rootDir = process.cwd()
@@ -20,6 +21,7 @@ export default {
   },
   plugins: [
     autoExternalPlugin(),
+    jsonPlugin(),
     commonjsPlugin()
   ]
 }

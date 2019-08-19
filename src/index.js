@@ -15,26 +15,25 @@ import rehypeStringify from 'rehype-stringify'
 import remarkMacro from 'remark-macro'
 import autolinkHeadings from './headings'
 import handlers from './handlers'
-import sanitizeOptions from './sanitize'
+import sanitizeOptions from './sanitize.json'
 import { escapeVueInMarkdown } from './utils'
 
+const macroEngine = remarkMacro()
+const layers = [
+  ['remark-parse', remarkParse],
+  ['remark-slug', remarkSlug],
+  ['remark-autolink-headings', autolinkHeadings],
+  ['remark-macro', macroEngine.transformer],
+  ['remark-squeeze-paragraphs', squeezeParagraphs],
+  ['remark-rehype', remarkRehype, { allowDangerousHTML: true }],
+  ['rehype-raw', rehypeRaw],
+  ['rehype-prism', rehypePrism, { ignoreMissing: true }],
+  ['rehype-stringify', rehypeStringify]
+]
+
 export default class NuxtMarkdown {
-  static macroEngine = remarkMacro()
-
-  static layers = [
-    ['remark-parse', remarkParse],
-    ['remark-slug', remarkSlug],
-    ['remark-autolink-headings', autolinkHeadings],
-    ['remark-macro', NuxtMarkdown.macroEngine.transformer],
-    ['remark-squeeze-paragraphs', squeezeParagraphs],
-    ['remark-rehype', remarkRehype, { allowDangerousHTML: true }],
-    ['rehype-raw', rehypeRaw],
-    ['rehype-prism', rehypePrism, { ignoreMissing: true }],
-    ['rehype-stringify', rehypeStringify]
-  ]
-
   constructor ({ toc, sanitize, handlers, extend }) {
-    this.layers = [ ...this.constructor.layers ]
+    this.layers = [ ...layers ]
 
     const extendLayerProxy = new Proxy(this.layers, {
       get: (_, prop) => {
@@ -54,7 +53,7 @@ export default class NuxtMarkdown {
     const registerMacroProxy = new Proxy({}, {
       get: (_, name) => {
         return (callback, inline) => {
-          NuxtMarkdown.macroEngine.addMacro(name, callback, inline)
+          macroEngine.addMacro(name, callback, inline)
         }
       }
     })
