@@ -55,8 +55,13 @@ export default class NuxtMarkdown {
 
     const registerMacroProxy = new Proxy({}, {
       get: (_, name) => {
-        return (callback, inline) => {
-          macroEngine.addMacro(name, callback, inline)
+        if (name === 'inline') {
+          return (callback) => {
+            macroEngine.addMacro(name, callback, true)
+          }
+        }
+        return (callback) => {
+          macroEngine.addMacro(name, callback, false)
         }
       }
     })
