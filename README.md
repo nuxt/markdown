@@ -104,3 +104,7 @@ const rendered = await md.toMarkup(markdown)
 ```
 
 Example taken from [dimerapp/remark-macro](https://github.com/dimerapp/remark-macro).
+
+## NuxtPress roadmap
+
+@nuxt/markdown was created mainly for [NuxtPress](https://nuxt.press) and is part of its **[roadmap](https://nuxt.press/en/roadmap/#roadmap)**.
