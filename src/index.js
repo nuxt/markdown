@@ -37,6 +37,9 @@ export default class NuxtMarkdown {
 
     const extendLayerProxy = new Proxy(this.layers, {
       get: (_, prop) => {
+        if (['push', 'splice', 'unshift', 'shift', 'pop', 'slice'].includes(prop)) {
+          return (...args) => this.layers[prop](...args)
+        }
         return this.layers.find(l => l[0] === prop)
       },
       set: (_, prop, value) => {
