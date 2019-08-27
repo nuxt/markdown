@@ -74,9 +74,14 @@ export default class NuxtMarkdown {
       }
     })
 
-    extendLayerProxy['remark-rehype'][2].handlers = Object.assign(builtinHandlers, handlers || {})
-    for (const handler in extendLayerProxy['remark-rehype'][2].handlers) {
-      extendLayerProxy['remark-rehype'][2].handlers[handler] = extendLayerProxy['remark-rehype'][2].handlers[handler].bind(this)
+    const remarkRehypeOptions = extendLayerProxy['remark-rehype'][2]
+    remarkRehypeOptions.handlers = {
+      ...builtinHandlers,
+      ...handlers
+    }
+
+    for (const handler in remarkRehypeOptions.handlers) {
+      remarkRehypeOptions.handlers[handler] = remarkRehypeOptions.handlers[handler].bind(this)
     }
 
     if (sanitize) {
@@ -117,11 +122,20 @@ export default class NuxtMarkdown {
   }
 
   async toMarkup (markdown) {
-    this.toc = []
+    // explictly set to false to nothing is added in ./handlers/heading
+    this.toc = this.options.toc ? [] : undefined
+
     markdown = escapeVueInMarkdown(markdown)
 
     const { contents: html } = await this.processor.process(markdown)
 
-    return { html, ...this.options.toc && { toc: this.toc } }
+    if (this.options.toc) {
+      return {
+        html,
+        toc: this.toc
+      }
+    }
+
+    return { html }
   }
 }
