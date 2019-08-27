@@ -125,9 +125,13 @@ export default class NuxtMarkdown {
     // explictly set to false to nothing is added in ./handlers/heading
     this.toc = this.options.toc ? [] : undefined
 
-    markdown = escapeVueInMarkdown(markdown)
+    let html = ''
+    if (markdown) {
+      markdown = escapeVueInMarkdown(markdown)
 
-    const { contents: html } = await this.processor.process(markdown)
+      const { contents } = await this.processor.process(markdown)
+      html = contents
+    }
 
     if (this.options.toc) {
       return {
