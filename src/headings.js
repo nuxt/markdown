@@ -35,7 +35,7 @@ export default function attacher (opts = {}) {
   }
 
   if (behaviour !== wrap && !linkProperties) {
-    linkProperties = { 'aria-hidden': true }
+    linkProperties = { 'aria-hidden': 'true' }
   }
 
   function injectNode (node) {
