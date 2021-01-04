@@ -14,7 +14,7 @@ npm i @nuxt/markdown --save
 import Markdown from '@nuxt/markdown'
 
 const md = new Markdown({ toc: false, sanitize: false })
-const contents = await md.toHTML(markdownSourceString)
+const contents = await md.toMarkup(markdownSourceString)
 ```
 
 ## Processing layers
