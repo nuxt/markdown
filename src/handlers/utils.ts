@@ -40,17 +40,17 @@ export const getTagName = function (value: string) {
   return result && result[1]
 }
 
-export const processMarkdownPlugins = function (type: "remark" | "rehype", options: MarkdownOptions) {
+export const processMarkdownPlugins = function (type: "remark" | "rehype", markdownOptions: MarkdownOptions) {
   const plugins = []
 
-  for (const plugin of (options as any)[`${type}Plugins`]) {
+  for (const plugin of (markdownOptions as any)[`${type}Plugins`]) {
     let name
     let options
     let instance
 
     if (typeof plugin === 'string') {
       name = plugin
-      options = (options as any)[camelCase(name)]
+      options = (markdownOptions as any)[camelCase(name)]
     } else if (Array.isArray(plugin)) {
       [name, options] = plugin
     }
