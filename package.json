@@ -17,7 +17,7 @@
     "@mapbox/rehype-prism": "^0.3.1",
     "detab": "^2.0.2",
     "mdast-util-definitions": "^1.2.4",
-    "mdast-util-to-string": "^1.0.6",
+    "mdast-util-to-string": "^2.0.0",
     "mdast-util-toc": "^4.2.0",
     "rehype-minify-whitespace": "^2.0.4",
     "rehype-raw": "^4.0.1",
