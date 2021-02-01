@@ -56,8 +56,7 @@ export const processMarkdownPlugins = function (type: "remark" | "rehype", markd
     }
 
     try {
-      instance = require(path.resolve(name))
-
+      instance = require(name)
       plugins.push({ instance, name, options })
     } catch (e) {
       logger.error(e.toString())
