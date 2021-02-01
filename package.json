@@ -31,7 +31,7 @@
     "remark-slug": "^5.1.2",
     "remark-squeeze-paragraphs": "^3.0.4",
     "unified": "^8.3.2",
-    "unist-builder": "^1.0.4",
+    "unist-builder": "^2.0.3",
     "unist-util-visit": "^2.0.0"
   },
   "repository": {
