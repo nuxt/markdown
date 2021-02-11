@@ -4653,12 +4653,12 @@ rehype-sort-attribute-values@^2.0.1:
     unist-util-visit "^1.1.0"
     x-is-array "^0.1.0"
 
-rehype-sort-attributes@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/rehype-sort-attributes/-/rehype-sort-attributes-2.0.1.tgz#acf5189e0b2611b55ef9cbf475f74c361ed09ae8"
-  integrity sha512-zj3s3WcunfmOLupc62QrpXyvK1psaZC/EDmIBymEwf5qIHBrBCK+KggfCC/Esrvtx0qPdkMwjr0K/31s/+otuw==
+rehype-sort-attributes@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/rehype-sort-attributes/-/rehype-sort-attributes-3.0.2.tgz#18c7e86b34de4b0222d0d54412e860333bd74b7e"
+  integrity sha512-roPtOHX6BfLXge161TnxOh+jr8JhZwUDVdqYI/qobYpfAkXgBfnftpWlwcShdsExa+nbUd5zU7z9A0nHBi35+A==
   dependencies:
-    unist-util-visit "^1.0.0"
+    unist-util-visit "^2.0.0"
 
 rehype-stringify@^6.0.0:
   version "6.0.0"
