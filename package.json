@@ -30,7 +30,7 @@
     "remark-rehype": "^5.0.0",
     "remark-slug": "^5.1.2",
     "remark-squeeze-paragraphs": "^3.0.4",
-    "unified": "^8.3.2",
+    "unified": "^9.2.1",
     "unist-builder": "^1.0.4",
     "unist-util-visit": "^2.0.0"
   },
