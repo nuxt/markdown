@@ -63,7 +63,7 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "eslint-plugin-vue": "^5.2.3",
+    "eslint-plugin-vue": "^7.11.1",
     "jest": "^24.9.0",
     "rollup": "^1.20.2",
     "rollup-plugin-auto-external": "^2.0.0",
